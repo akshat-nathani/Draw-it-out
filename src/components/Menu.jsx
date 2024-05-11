@@ -4,6 +4,7 @@ import { FaFeatherPointed } from "react-icons/fa6";
 import { RiScreenshot2Fill } from "react-icons/ri";
 import { useState } from "react";
 import { takeSnapshot } from "../utils/canvas.js";
+import { RiEraserFill } from "react-icons/ri";
 
 const Menu = ({
   isDrawing,
@@ -15,9 +16,18 @@ const Menu = ({
   canvasRef,
 }) => {
   const [pencilWidth, setPencilWidth] = useState(false);
+  const [isErasing, setIsErasing] = useState(false);
 
   const toggleIsDrawing = () => {
     setIsDrawing(!isDrawing);
+    setIsErasing(false);
+  };
+
+  const toggleEraser = () => {
+    setIsDrawing(false); // Ensure that drawing is enabled when switching from eraser mode
+    setPencilWidth(false); // Disable brush thickness slider when using eraser
+    // setColor("#DBDCDF"); // Set eraser color to match canvas background color
+    setIsErasing(!isErasing);
   };
 
   return (
@@ -29,6 +39,13 @@ const Menu = ({
           }`}
           onClick={toggleIsDrawing}
           title="Draw"
+        />
+        <RiEraserFill
+          className={`text-[2rem] md:text-[3rem] p-[0.5rem] md:p-[0.8rem] shadow-vsm rounded-[0.5rem] cursor-pointer hover:bg-[#B7BABF] ${
+            isErasing ? "bg-gray-400" : ""
+          }`}
+          onClick={toggleEraser}
+          title="Eraser"
         />
         <FaFeatherPointed
           className={`text-[2rem] md:text-[3rem] p-[0.5rem] md:p-[0.8rem] shadow-vsm rounded-[0.5rem] cursor-pointer hover:bg-[#B7BABF] ${

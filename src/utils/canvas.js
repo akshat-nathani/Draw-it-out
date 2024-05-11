@@ -14,6 +14,7 @@ export function startDrawing(canvas, color, lineThickness, bgColor) {
   ctx.lineWidth = lineThickness;
 
   let isDrawing = false;
+  let isErasing = false;
 
   // Main draw function
   const draw = (e) => {
@@ -22,13 +23,23 @@ export function startDrawing(canvas, color, lineThickness, bgColor) {
       lastX = e.offsetX;
       lastY = e.offsetY;
     }
+
     ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
+    if (isErasing) {
+      ctx.globalCompositeOperation = 'destination-out'; // Use destination-out to erase
+      ctx.arc(e.offsetX, e.offsetY, lineThickness / 2, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalCompositeOperation = 'source-over'; // Reset to default drawing mode
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+    }
     lastX = e.offsetX;
     lastY = e.offsetY;
-    drawHistory.push({ x: e.offsetX, y: e.offsetY });
+
+    // Reset globalCompositeOperation to default after drawing
+    ctx.globalCompositeOperation = 'source-over';
   };
 
   let lastX = 0;
@@ -37,7 +48,6 @@ export function startDrawing(canvas, color, lineThickness, bgColor) {
     lastX = e.offsetX;
     lastY = e.offsetY;
     isDrawing = true;
-    drawHistory.push({ x: lastX, y: lastY });
   });
   canvas.addEventListener("mouseup", () => (isDrawing = false));
   canvas.addEventListener("mouseout", () => (isDrawing = false));
@@ -66,7 +76,16 @@ export function startDrawing(canvas, color, lineThickness, bgColor) {
     const offsetY = touch.clientY - canvas.offsetTop;
     draw({ offsetX, offsetY });
   });
+
+  // Function to toggle eraser mode
+  canvas.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    isErasing = !isErasing;
+    return false;
+  });
 }
+
+
 
 // Function to clear the canvas
 export function clearCanvas(canvas, bgColor) {
