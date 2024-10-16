@@ -237,16 +237,6 @@ function Home() {
                         >
                             <RxCross1 />
                         </div>
-                        <h1 className="text-[0.7rem] vvsm:text-[1rem] pb-4 pt-2 dark:text-white">
-                            Made with &#128157; by{" "}
-                            <a
-                                href="https://shubham-s-socials.vercel.app/"
-                                className="decoration-none font-semibold hover:underline"
-                            >
-                                Master Mickey
-                            </a>
-                            !
-                        </h1>
                     </div>
                     <div
                         className={
